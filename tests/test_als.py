@@ -5,6 +5,10 @@ from src._base import err,init_factors
 import matplotlib.pyplot as plt
 
 def test_err_fast():
+    """
+    Test err_fast for 3 tensors.
+    plot the terminaison criterion (obtained by err_fast) and exact error.
+    """
     # create a kruskal tensor
     # factor matrices
     A=np.arange(9).reshape(3,3)
@@ -28,7 +32,7 @@ def test_err_fast():
     plt.ylabel('terminaison criterion')
     plt.legend(loc='best')
     
-    # create a simple random tensor
+    # create an complicated random tensor
     I=50
     J=50
     K=50
@@ -50,10 +54,6 @@ def test_err_fast():
     plt.legend(loc='best')
 
     # create a simple random tensor
-    I=50
-    J=50
-    K=50
-    r=10 # rank
     A,B,C,noise=init_factors(I,J,K,r,False)
     fac_true=[A,B,C]
     t=tl.cp_to_tensor((None,fac_true))+noise
@@ -73,6 +73,10 @@ def test_err_fast():
     
         
 def test_als():
+    """
+    Test of als for a kruskal tensor, start with true factors
+
+    """
     # create a kruskal tensor
     # factor matrices
     A=np.arange(9).reshape(3,3)

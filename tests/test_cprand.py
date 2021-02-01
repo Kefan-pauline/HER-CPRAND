@@ -8,7 +8,7 @@ import copy
 
 def test_err_rand() :
     """
-    Test of err_rand
+    Test of err_rand for a kruskal tensor
     """
     # create a kruskal tensor
     # factor matrices
@@ -24,7 +24,8 @@ def test_err_rand() :
     
 def test_err_rand_fast():
     """
-    Test of err_rand_fast
+    Test of err_rand_fast for a kruskal tensor
+    plot the terminaison criterion with exact error of CPRAND
     """
     A=np.arange(9).reshape(3,3)
     B=np.arange(6).reshape(2,3)+9
@@ -48,7 +49,7 @@ def test_err_rand_fast():
     
 def test_cprand():
     """
-    Test of cprand
+    Test of cprand for a kruskal tensor, start with the true factors
     """
     A=np.arange(9).reshape(3,3)
     B=np.arange(6).reshape(2,3)+9
@@ -67,6 +68,7 @@ def test_cprand():
         
 def test_cprand_random():
     """
+    For a noised I*J*K rank r random tensors, with random initialized factor matrices
     plot err_fast and exact err for simple / complicated case
     """
     I=50

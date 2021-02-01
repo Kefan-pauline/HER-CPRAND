@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 
 def test_hercprand():
     """
-    Test of hercprand
+    Test of hercprand for a 3*2*2 kruskal tensor.
+    Plot the terminaison criterion.
     """
     A=np.arange(9).reshape(3,3)
     B=np.arange(6).reshape(2,3)+9

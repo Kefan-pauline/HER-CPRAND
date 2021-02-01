@@ -58,6 +58,7 @@ def svd_init_fac(tensor,rank) :
 
 def err_fac(fac,fac_est) :
   """
+    factor error computation
     Parameters
     ----------
     fac : list of matrices
@@ -104,7 +105,7 @@ def err(tensor,weight,factors):
 
 def sv_scale_to_100(A):
   """
-    scale the singular value of matrix a to 1,..,100
+    scale the singular value of matrix A to 1,..,100
 
     Parameters
     ----------

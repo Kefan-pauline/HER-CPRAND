@@ -98,8 +98,8 @@ def CPRAND(tensor,rank,n_samples,factors=None,exact_err=False,it_max=100,err_it_
     rank : int
     n_samples : int
         sample size
-     factors : list of matrices, optional
-        an initial factor matrices. The default is None.
+    factors : list of matrices, optional
+        initial factor matrices. The default is None.
     exact_err : boolean, optional
         whether use err or err_rand_fast for terminaison criterion. The default is False.
         (not useful for this version)

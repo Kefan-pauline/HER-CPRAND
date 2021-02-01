@@ -6,7 +6,7 @@ from src._herals import her_Als
 
 def test_herals():
     """
-    Test of herals
+    Test of herals for a kruskal tensor
     """
     # create a kruskal tensor
     # factor matrices
