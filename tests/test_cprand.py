@@ -20,7 +20,7 @@ def test_err_rand() :
     factors+=[B]
     factors+=[C]
     t_krus = tl.cp_to_tensor((None,factors))
-    print(err_rand(t_krus,None,factors,10))
+    print(err_rand(t_krus,None,factors,2))
     
 def test_err_rand_fast():
     """
@@ -68,7 +68,7 @@ def test_cprand():
         
 def test_cprand_random():
     """
-    For a noised I*J*K rank r random tensors, with random initialized factor matrices
+    For a noised I*J*K rank r random tensor, with random initialized factor matrices
     plot err_fast and exact err for simple / complicated case
     """
     I=50
@@ -79,6 +79,7 @@ def test_cprand_random():
     A,B,C,noise=init_factors(I,J,K,r,True)
     fac_true=[A,B,C]
     t=tl.cp_to_tensor((None,fac_true))+noise
+    print(tl.norm(t))
     factors=random_init_fac(t,r)
     weights2,factors2,it2,error2,error_es2=CPRAND(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400)
     plt.figure(0)
@@ -93,6 +94,7 @@ def test_cprand_random():
     A,B,C,noise=init_factors(I,J,K,r,False)
     fac_true=[A,B,C]
     t=tl.cp_to_tensor((None,fac_true))+noise
+    print(tl.norm(t))
     factors=random_init_fac(t,r)
     weights2,factors2,it2,error2,error_es2=CPRAND(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400)
     plt.plot(range(len(error2)),error2,'b-',label="exact")

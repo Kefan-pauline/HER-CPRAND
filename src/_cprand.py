@@ -37,6 +37,7 @@ def err_rand(tensor,weights,factors,nb_samples,indices_list=None):
   if indices_list==None : 
     #indices_list = [np.random.randint(0, tl.shape(m)[0], size=nb_samples, dtype=int) for m in factors] 
     indices_list = [np.random.choice(tl.shape(m)[0], nb_samples) for m in factors]   # to avoid duplicate choices
+    # works if nb_samples <= tl.shape(m)[0] for m in factors
     indices_list = [i.tolist() for i in indices_list]
     indices_list = tuple(indices_list)
   est_values=[]
