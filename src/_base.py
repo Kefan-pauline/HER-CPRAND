@@ -123,7 +123,7 @@ def sv_scale_to_100(A):
   d[len(d)-1]=1
   return (u@np.diag(d)@v)
 
-def init_factors(I,J,K,r,noise_level=0.001,scale=False) :
+def init_factors(I,J,K,r,noise_level=0.1,scale=False) :
   """
     Initialize a three way tensor's factor matrices
     
@@ -144,22 +144,52 @@ def init_factors(I,J,K,r,noise_level=0.001,scale=False) :
 
     Returns
     -------
-    A : matrix
-        first factor matrix.
-    B : matrix
-        seconde factor matrix.
-    C : matrix
-        third factor matrix.
-    noise : matrix
-        noise matrix.
+    factors : list of matrices
+        factors
+    noise : tensor
+        noise tensor.
 
   """
   A=np.random.normal(0, 1, size=(I, r))
   B=np.random.normal(0, 1, size=(J, r))
   C=np.random.normal(0, 1, size=(K, r))
-  noise=np.random.normal(0, noise_level, size=(I,J,K))
   if (scale==True) :  
     A=sv_scale_to_100(A)
     B=sv_scale_to_100(B)
     C=sv_scale_to_100(C)
-  return (A,B,C,noise)
+  factors=[A,B,C]
+  x=tl.cp_to_tensor((None,factors))
+  N=np.random.normal(0, 1, size=(I,J,K))
+  noise=noise_level*tl.norm(x)/tl.norm(N)*N
+  return (factors,noise)
+
+def score(fac,fac_est):
+  """
+    standard score metric
+
+    Parameters
+    ----------
+    fac : list of matrices
+        true factors
+    fac_est : list of matrices
+        factors returned by CP decomposition
+
+    Returns
+    -------
+    double
+        Score.
+
+  """
+  weights,fac=tl.cp_normalize((None,fac))
+  weights_est,fac_est=tl.cp_normalize((None,fac_est))
+  score=0
+  # find the corresponding columns of fac and fac_est
+  row_ind, col_ind = linear_sum_assignment(-np.dot(np.transpose(fac[0]),fac_est[0]))
+  for k in range(len(fac)):
+    fac_est[k]=fac_est[k][:,col_ind]
+  for i in range(fac[0].shape[1]): # R
+    temp=1
+    for j in range(len(fac)): # N
+      temp=temp*np.dot(fac[j][:,i],fac_est[j][:,i])/(tl.norm(fac[j][:,i])*tl.norm(fac_est[j][:,i]))
+    score=score+temp
+  return (score/fac[0].shape[1])

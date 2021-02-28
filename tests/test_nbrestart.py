@@ -44,10 +44,10 @@ def test_nbrestart(i):
         # Random initialization of a noised cp_tensor
         np.random.seed(i)
         if i==1 or i==2:
-            A,B,C,noise=init_factors(I,J,K,r,scale=False)
+            fac_true,noise=init_factors(I,J,K,r,scale=False)
         else :
-            A,B,C,noise=init_factors(I,J,K,r,scale=True)
-        t=tl.cp_to_tensor((None,[A,B,C]))+noise
+            fac_true,noise=init_factors(I,J,K,r,scale=True)
+        t=tl.cp_to_tensor((None,fac_true))+noise
         for j in range(5):
             factors=random_init_fac(t,r)
             if i==1 :

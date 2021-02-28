@@ -76,8 +76,7 @@ def test_cprand_random():
     K=50
     r=10 # rank
     n_samples=int(10*r*np.log(r)+1) # nb of randomized samples
-    A,B,C,noise=init_factors(I,J,K,r,True)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,True)
     t=tl.cp_to_tensor((None,fac_true))+noise
     print(tl.norm(t))
     factors=random_init_fac(t,r)
@@ -91,7 +90,7 @@ def test_cprand_random():
     plt.ylabel('terminaison criterion')
     plt.legend(loc='best')
     plt.figure(1)
-    A,B,C,noise=init_factors(I,J,K,r,False)
+    fac_true,noise=init_factors(I,J,K,r,False)
     fac_true=[A,B,C]
     t=tl.cp_to_tensor((None,fac_true))+noise
     print(tl.norm(t))

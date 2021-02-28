@@ -37,8 +37,7 @@ def test_err_fast():
     J=50
     K=50
     r=10 # rank
-    A,B,C,noise=init_factors(I,J,K,r,True)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,True)
     t=tl.cp_to_tensor((None,fac_true))+noise
     weights,factors,it,error,l=als(t,r,list_factors=True)
     err_ex=[]
@@ -54,8 +53,7 @@ def test_err_fast():
     plt.legend(loc='best')
 
     # create a simple random tensor
-    A,B,C,noise=init_factors(I,J,K,r,False)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,False)
     t=tl.cp_to_tensor((None,fac_true))+noise
     weights,factors,it,error,l=als(t,r,list_factors=True)
     err_ex=[]

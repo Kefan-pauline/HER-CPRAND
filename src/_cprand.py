@@ -89,9 +89,9 @@ def err_rand_fast(tensor,A,V,W,indices_list,nb_samples=None):
   return(np.sqrt(res*P),indices_list) 
 
 
-def CPRAND(tensor,rank,n_samples,factors=None,exact_err=False,it_max=100,err_it_max=20,tol=1e-7,list_factors=False,time_rec=False):
+def CPRAND_old(tensor,rank,n_samples,factors=None,exact_err=False,it_max=100,err_it_max=20,tol=1e-7,list_factors=False,time_rec=False):
   """
-    CPRAND for CP-decomposition
+    CPRAND for CP-decomposition, with err_rand_fast
     return also exact error
 
     Parameters
@@ -164,6 +164,96 @@ def CPRAND(tensor,rank,n_samples,factors=None,exact_err=False,it_max=100,err_it_
     ######### error update #########
     ################################
     error.append(err_rand_fast(tensor,factors[N-1],V,W,indices_list,n_samples)[0]/norm_tensor) # same indices used as for Random Lesat Square Calculation
+
+    
+    if (error[len(error)-1]<min_err) : min_err=error[len(error)-1] # err update
+    else : err_it=err_it+1
+    if time_rec == True : 
+      toc=time.time()
+      list_time.append(toc-tic)
+    error_ex.append(err(tensor,weights,factors)/norm_tensor)
+  # weights,factors=tl.cp_tensor.cp_normalize((None,factors))
+  if time_rec == True and list_factors==True: return(weights,factors,it,error_ex,error,list_fac,list_time)
+  if list_factors==True : return(weights,factors,it,error_ex,error,list_fac)
+  if time_rec==True : return(weights,factors,it,error_ex,error,list_time)
+  return(weights,factors,it,error_ex,error)
+
+def CPRAND(tensor,rank,n_samples,n_samples_err,factors=None,exact_err=False,it_max=100,err_it_max=20,tol=1e-7,list_factors=False,time_rec=False):
+  """
+    Add argulent n_samples_err
+    CPRAND for CP-decomposition, with err_rand
+    return also exact error
+
+    Parameters
+    ----------
+    tensor : tensor
+    rank : int
+    n_samples : int
+        sample size
+    factors : list of matrices, optional
+        initial factor matrices. The default is None.
+    exact_err : boolean, optional
+        whether use err or err_rand_fast for terminaison criterion. The default is False.
+        (not useful for this version)
+    it_max : int, optional
+        maximal number of iteration. The default is 100.
+    err_it_max : int, optional
+        maximal of iteration if terminaison critirion is not improved. The default is 20.
+    tol : float, optional
+        error tolerance. The default is 1e-7.
+    list_factors : boolean, optional
+        If true, then return factor matrices of each iteration. The default is False.
+    time_rec : boolean, optional
+        If true, return computation time of each iteration. The default is False.
+
+    Returns
+    -------
+    the CP decomposition, number of iteration and exact / estimated termination criterion. 
+    list_fac and list_time are optional.
+
+    """
+  N=tl.ndim(tensor) # order of tensor
+  norm_tensor=tl.norm(tensor) # norm of tensor
+
+  if list_factors==True : list_fac=[]
+  if time_rec == True : list_time=[]
+  if (factors==None): factors=svd_init_fac(tensor,rank)
+  # weights,factors=tl.cp_tensor.cp_normalize((None,factors))
+  if list_factors==True : list_fac.append(copy.deepcopy(factors))
+  weights=None
+  it=0
+  err_it=0
+  ########################################
+  ######### error initialization #########
+  ########################################
+  temp,ind_err=err_rand(tensor,weights,factors,n_samples_err) 
+  error=[temp/norm_tensor] 
+  error_ex=[err(tensor,weights,factors)/norm_tensor]
+
+  min_err=error[len(error)-1]
+  rng = tl.random.check_random_state(None)
+  while (min_err>tol and it<it_max and err_it<err_it_max): 
+    if time_rec == True : tic=time.time()
+    for n in range(N):
+      Zs,indices=sample_khatri_rao(factors,n_samples,skip_matrix=n,random_state=rng)
+      indices_list = [i.tolist() for i in indices]
+      indices_list.insert(n, slice(None, None, None))
+      indices_list = tuple(indices_list)
+      if (n==0) :sampled_unfolding = tensor[indices_list]
+      else : sampled_unfolding =tl.transpose(tensor[indices_list])
+      V=tl.dot(tl.transpose(Zs),Zs)
+      W=tl.dot(sampled_unfolding,Zs)
+      # update
+      factors[n] = tl.transpose(tl.solve(V,tl.transpose(W))) # solve needs a squared matrix
+    
+
+    if list_factors==True : list_fac.append(copy.deepcopy(factors))
+    it=it+1
+
+    ################################
+    ######### error update #########
+    ################################
+    error.append(err_rand(tensor,weights,factors,n_samples_err,ind_err)[0]/norm_tensor) # same indices used as for Random Lesat Square Calculation
 
     
     if (error[len(error)-1]<min_err) : min_err=error[len(error)-1] # err update

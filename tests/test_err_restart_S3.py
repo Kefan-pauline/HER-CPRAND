@@ -2,6 +2,7 @@ import numpy as np
 import tensorly as tl
 from src._cprand import CPRAND,err_rand,err_rand_fast
 from src._base import init_factors,random_init_fac,svd_init_fac,err
+from src._hercprand import her_CPRAND1,her_CPRAND_old
 from tensorly.decomposition import sample_khatri_rao
 import matplotlib.pyplot as plt
 import copy
@@ -16,8 +17,7 @@ def test_cprand_size():
     J=50
     K=50
     r=10 # rank
-    A,B,C,noise=init_factors(I,J,K,r,True)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,True)
     t=tl.cp_to_tensor((None,fac_true))+noise
     print(tl.norm(t))
     factors=random_init_fac(t,r)
@@ -168,8 +168,7 @@ def test_plot_restart(c):
     J=50
     K=50
     r=10 # rank
-    A,B,C,noise=init_factors(I,J,K,r,False)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,False)
     t=tl.cp_to_tensor((None,fac_true))+noise
     print("norm_tensor",tl.norm(t))
     n_samples=int(10*r*np.log(r)+1)
@@ -191,126 +190,42 @@ def test_plot_restart(c):
         plt.legend(loc='best')
     
 
-def her_CPRAND_e(tensor,rank,n_samples,factors=None,exact_err=True,it_max=100,err_it_max=20,tol=1e-7,beta=0.1,eta=3,gamma=1.01,gamma_bar=1.005,list_factors=False,time_rec=False):
-    """
-      modified herCPRAND to use another err computation
-      
-    """
-    beta_bar=1
-    N=tl.ndim(tensor) # order of tensor
-    norm_tensor=tl.norm(tensor) # norm of tensor
-    if list_factors==True : list_fac=[]
-    if (time_rec==True) : list_time=[]
-  
-    if (factors==None) : factors=svd_init_fac(tensor,rank)
-    # Initialization of factor hat matrice by factor matrices
-    factors_hat=factors
-    if list_factors==True : list_fac.append(copy.deepcopy(factors))
-  
-    weights=None
-    it=0
-    err_it=0
-    cpt=0
-    #
-    # added
-    #
-    n_samples_err=400 # assuming that miu max = 1
-    ########################################
-    ######### error initialization #########
-    ########################################
-    #
-    # added
-    #
-    F_hat_bf,ind_bf=err_rand(tensor,None,factors,n_samples_err)
-    F_hat_bf_ex=err(tensor,None,factors) # exact cost
-    rng = tl.random.check_random_state(None)
-    error=[F_hat_bf/norm_tensor]
-    error_ex=[F_hat_bf_ex/norm_tensor]
-    min_err=error[len(error)-1]
-  
-    while (min_err>tol and it<it_max and err_it<err_it_max): 
-      if time_rec==True :tic=time.time()
-      for n in range(N):
-        Zs,indices=sample_khatri_rao(factors_hat,n_samples,skip_matrix=n,random_state=rng)
-        indices_list = [i.tolist() for i in indices]
-        indices_list.insert(n, slice(None, None, None))
-        indices_list = tuple(indices_list)
-        V=tl.dot(tl.transpose(Zs),Zs)
-        # J'ai du mal avec la syntaxe tensor[indices_list],
-        # Ca renvoie une matrices et non un tenseur?
-        if (n==0) :sampled_unfolding = tensor[indices_list] 
-        else : sampled_unfolding = tl.transpose(tensor[indices_list])
-        W=tl.dot(sampled_unfolding,Zs)
-        factor_bf=factors[n]
-        # update
-        factors[n] = tl.transpose(tl.solve(V,tl.transpose(W))) # solve needs a squared full rank matrix, if rank>nb_sampls ok
-        # if (n==N-1) : F_hat_new=tl.norm(tl.dot(Zs,tl.transpose(factors[n]))-sampled_unfolding,2) # cost update 
-        # extrapolate
-        factors_hat[n]=factors[n]+beta*(factors[n]-factor_bf)
-      ########################################
-      #########      error update    #########
-      ########################################
-      #
-      # added (F in fact, not F hat)
-      #
-      F_hat_new,_= err_rand(tensor,weights,factors,n_samples_err,indices_list=ind_bf)
-
-   
-      if (F_hat_new>F_hat_bf):
-        factors_hat=factors
-        beta_bar=beta
-        beta=beta/eta
-        cpt=cpt+1
-      else :
-        factors=factors_hat
-        beta_bar=min(1,beta_bar*gamma_bar)
-        beta=min(beta_bar,gamma*beta)
-      ########################################
-      ######### update for next it   #########
-      ########################################
-      it=it+1
-      F_hat_bf=F_hat_new
-      if list_factors==True : list_fac.append(copy.deepcopy(factors))
-      error.append(F_hat_new/norm_tensor)
-      if (error[len(error)-1]<min_err) : min_err=error[len(error)-1] # err update
-      else : err_it=err_it+1
-      if time_rec==True : 
-        toc=time.time()
-        list_time.append(toc-tic)
-      error_ex.append(err(tensor,None,factors)/norm_tensor)  # exact cost update
-    # weights,factors=tl.cp_normalize((None,factors))
-    if list_factors==True and time_rec==True: return(weights,factors,it,error_ex,error,cpt/it,list_fac,list_time)
-    if list_factors==True : return(weights,factors,it,error_ex,error,cpt/it,list_fac)
-    if time_rec==True : return(weights,factors,it,error_ex,error,cpt/it,list_time)
-    return(weights,factors,it,error_ex,error,cpt/it)
 
 def test_herCPRAND_e():
+    """
+    Run herCPRAND_e for the simple and complicated case, plot exact/estimated error.
+    Print restart percentage.
+    Compare running time with herCPRAND for complicated case.
+    """
     I=50
     J=50
     K=50
     r=10 # rank
     n_samples=int(10*r*np.log(r)+1) # nb of randomized samples
-    A,B,C,noise=init_factors(I,J,K,r,True)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,True)
     t=tl.cp_to_tensor((None,fac_true))+noise
     factors=random_init_fac(t,r)
-    weights2,factors2,it2,error2,error_es2,cpt2=her_CPRAND_e(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400)
+    weights2,factors2,it2,error2,error_es2,cpt2,time2=her_CPRAND1(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400,time_rec=True)
+    print("Complicated case pct restart",cpt2)
+    print("Complicated case time err_rand",np.cumsum(time2)[len(time2)-1])
+    weights1,factors1,it1,error1,error_es1,cpt1,time1=her_CPRAND_old(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400,time_rec=True)
+    print("Complicated case time err_rand_fast",np.cumsum(time1)[len(time1)-1])
     plt.figure(0)
     plt.plot(range(len(error2)),error2,'b-',label="exact")
-    plt.plot(range(len(error_es2)),error_es2,'r--',label="err fast")
+    plt.plot(range(len(error_es2)),error_es2,'r--',label="err rand")
     plt.xlabel('it')
     plt.yscale('log')
     plt.title('hercprand for complicated case')
     plt.ylabel('terminaison criterion')
     plt.legend(loc='best')
     plt.figure(1)
-    A,B,C,noise=init_factors(I,J,K,r,False)
-    fac_true=[A,B,C]
+    fac_true,noise=init_factors(I,J,K,r,False)
     t=tl.cp_to_tensor((None,fac_true))+noise
     factors=random_init_fac(t,r)
-    weights2,factors2,it2,error2,error_es2,cpt2=her_CPRAND_e(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400)
+    weights2,factors2,it2,error2,error_es2,cpt2,time2=her_CPRAND1(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=500,err_it_max=400,time_rec=True)
+    print("Simple case pct restart",cpt2)
     plt.plot(range(len(error2)),error2,'b-',label="exact")
-    plt.plot(range(len(error_es2)),error_es2,'r--',label="err fast")
+    plt.plot(range(len(error_es2)),error_es2,'r--',label="err rand")
     plt.xlabel('it')
     plt.yscale('log')
     plt.title('hercprand for simple case')

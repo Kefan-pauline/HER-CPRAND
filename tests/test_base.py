@@ -53,6 +53,15 @@ def test_err():
     weights_cp,factors_cp=tl.cp_normalize((None,factors))
     print(base.err(t_krus,weights_cp,factors_cp))
     
+def test_score():
+    fac=[]
+    fac_est=[]
+    for i in range(4):
+        rnd=np.random.random((2, 3))
+        fac+=[rnd]
+        fac_est+=[rnd[:,range(2,-1,-1)]]
+    print(base.score(fac,fac_est))
+    
 
 
 

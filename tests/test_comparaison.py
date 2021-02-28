@@ -1,6 +1,6 @@
 
 import numpy as np
-from src._comparaison import comparaison,compar_time
+from src._comparaison import comparaison,compar_time,comparison
 
 
 
@@ -78,6 +78,22 @@ def test_compar_time(i):
         # complicated case factors error 
         compar_time(I,J,K,r,nb_rand,n_samples,list_factors=True,scale=True)
 
+def test_comparison():
+    """
+    test of comparison in a specific situation
 
+    Returns
+    -------
+    None.
+
+    """
+    I=50
+    J=50
+    K=50
+    r=10
+    n_samples=int(10*r*np.log(r)+1)
+    nb_rand=10
+    n_samples_err=400
+    comparison(I,J,K,r,nb_rand,n_samples,n_samples_err,exact_err=False,scale=True)
     
 
