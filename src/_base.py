@@ -77,7 +77,7 @@ def err_fac(fac,fac_est) :
   err=0
   for i in range(len(fac)):
     # find the corresponding columns of fac and fac_est
-    if i==0 : row_ind, col_ind = linear_sum_assignment(-np.dot(np.transpose(fac[i]),fac_est[i]))
+    if i==0 : row_ind, col_ind = linear_sum_assignment(-np.abs(np.dot(np.transpose(fac[i]),fac_est[i])))
     err=err+(tl.norm(fac[i]-fac_est[i][:,col_ind])/tl.norm(fac[i]))
   return (err/len(fac))
 
@@ -184,12 +184,13 @@ def score(fac,fac_est):
   weights_est,fac_est=tl.cp_normalize((None,fac_est))
   score=0
   # find the corresponding columns of fac and fac_est
-  row_ind, col_ind = linear_sum_assignment(-np.dot(np.transpose(fac[0]),fac_est[0]))
+  row_ind, col_ind = linear_sum_assignment(-np.abs(np.dot(np.transpose(fac[0]),fac_est[0])))
   for k in range(len(fac)):
     fac_est[k]=fac_est[k][:,col_ind]
   for i in range(fac[0].shape[1]): # R
     temp=1
     for j in range(len(fac)): # N
       temp=temp*np.dot(fac[j][:,i],fac_est[j][:,i])/(tl.norm(fac[j][:,i])*tl.norm(fac_est[j][:,i]))
+      # np.transpose(fac[j][:,i] ? 
     score=score+temp
   return (score/fac[0].shape[1])

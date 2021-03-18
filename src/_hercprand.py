@@ -323,7 +323,7 @@ def her_CPRAND2(tensor,rank,n_samples,factors=None,exact_err=True,it_max=100,err
     return(weights,factors,it,error_ex,error,cpt/it)
 
 
-def her_CPRAND(tensor,rank,n_samples,n_samples_err=400,factors=None,exact_err=True,it_max=100,err_it_max=20,tol=1e-7,beta=0.1,eta=3,gamma=1.01,gamma_bar=1.005,list_factors=False,time_rec=False):
+def her_CPRAND(tensor,rank,n_samples,n_samples_err=400,factors=None,exact_err=True,it_max=100,err_it_max=20,tol=1e-7,beta=0.1,eta=3,gamma=1.01,gamma_bar=1.005,list_factors=False,time_rec=False,filter=10):
     """
       modified herCPRAND to use another err computation
       same err sample taking mean value
@@ -407,10 +407,10 @@ def her_CPRAND(tensor,rank,n_samples,n_samples_err=400,factors=None,exact_err=Tr
       #
       # changed
       #
-      if it<10 :
+      if it<filter:
           F_hat_bf=np.mean(list_F_hat_bf)
       else:
-          F_hat_bf=np.mean(list_F_hat_bf[(len(list_F_hat_bf)-10):(len(list_F_hat_bf)-1)])
+          F_hat_bf=np.mean(list_F_hat_bf[(len(list_F_hat_bf)-filter):(len(list_F_hat_bf)-1)])
 
 
 

@@ -86,9 +86,11 @@ def test_als():
     factors+=[C]
     t_krus = tl.cp_to_tensor((None,factors))
     #weights_cp,factors_cp=tl.cp_normalize((None,factors))
+
     
-    weights,factors,it,error1,l=als(t_krus,3,factors=factors,list_factors=True)
+    weights,factors1,it,error1,l=als(t_krus,3,factors=factors,list_factors=True)
     
-    for i in factors :
+    for i in factors1 :
         print(i)
     print(it)
+    

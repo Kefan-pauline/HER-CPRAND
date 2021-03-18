@@ -1,7 +1,6 @@
 
 import numpy as np
-from src._comparaison import comparaison,compar_time,comparison
-
+from src._comparaison import comparaison,compar_time,comparison,compar_filter
 
 
 def test_comparaison(i): 
@@ -87,13 +86,29 @@ def test_comparison():
     None.
 
     """
-    I=50
-    J=50
-    K=50
+    I=100
+    J=100
+    K=100
     r=10
     n_samples=int(10*r*np.log(r)+1)
     nb_rand=10
     n_samples_err=400
     comparison(I,J,K,r,nb_rand,n_samples,n_samples_err,exact_err=False,scale=True)
     
+def test_compar_filter():
+    """
+    test of comparison in a specific situation
 
+    Returns
+    -------
+    None.
+
+    """
+    I=100
+    J=100
+    K=100
+    r=10
+    n_samples=int(10*r*np.log(r)+1)
+    nb_rand=10
+    n_samples_err=400
+    compar_filter(I,J,K,r,nb_rand,n_samples,n_samples_err,exact_err=False,scale=True)

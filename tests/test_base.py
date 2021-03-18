@@ -54,6 +54,9 @@ def test_err():
     print(base.err(t_krus,weights_cp,factors_cp))
     
 def test_score():
+    """
+    Test of score : change order of columns
+    """
     fac=[]
     fac_est=[]
     for i in range(4):
@@ -61,6 +64,36 @@ def test_score():
         fac+=[rnd]
         fac_est+=[rnd[:,range(2,-1,-1)]]
     print(base.score(fac,fac_est))
+    
+def test_score1():
+    """
+    Test of score : change scale
+    """
+    fac=[]
+    fac_est=[]
+    for i in range(4):
+        rnd=np.ones((3,3))
+        fac+=[rnd]
+        fac_est+=[rnd+1]
+    print(base.score(fac,fac_est))
+    
+def test_score2():
+    """
+    Test of score : change scale and order of columns
+    """
+    factors=[]
+    fac_est=[]
+    A=np.arange(9).reshape(3,3)
+    B=np.arange(6).reshape(2,3)+9
+    C=np.arange(6).reshape(2,3)+15
+    factors=[]
+    factors+=[A]
+    factors+=[B]
+    factors+=[C]
+    fac_est+=[A[:,range(2,-1,-1)]*2]
+    fac_est+=[B[:,range(2,-1,-1)]*2]
+    fac_est+=[C[:,range(2,-1,-1)]*2]
+    print(base.score(factors,fac_est))
     
 
 
