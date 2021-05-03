@@ -22,9 +22,9 @@ def test_paramresearch(i):
 
     """
     
-    I=50
-    J=50
-    K=50
+    I=100
+    J=100
+    K=100
     r=10 # rank
     n_samples=int(10*r*np.log(r)+1) # nb of randomized samples
     nb_rand=10 # nb of random initialization

@@ -1,6 +1,6 @@
 
 import numpy as np
-from src._comparaison import comparaison,compar_time,comparison,compar_filter
+from src._comparaison import comparaison,compar_time,comparison,compar_filter,nn_comparison,nn_err_it
 
 
 def test_comparaison(i): 
@@ -21,12 +21,12 @@ def test_comparaison(i):
     None.
 
     """
-    I=50
-    J=50
-    K=50
+    I=100
+    J=100
+    K=100
     r=10 # rank
     n_samples=int(10*r*np.log(r)+1) # nb of randomized samples
-    nb_rand=10 # nb of random initialization
+    nb_rand=5 # nb of random initialization
     if i ==1 :
         # simple case data fitting error
         comparaison(I,J,K,r,nb_rand,n_samples)
@@ -112,3 +112,42 @@ def test_compar_filter():
     nb_rand=10
     n_samples_err=400
     compar_filter(I,J,K,r,nb_rand,n_samples,n_samples_err,exact_err=False,scale=True)
+
+
+def test_nn_comparison():
+    """
+    test of nn_comparison in a specific situation
+
+    Returns
+    -------
+    None.
+
+    """
+    I=100
+    J=100
+    K=100
+    r=10
+    n_samples=int(10*r*np.log(r)+1)
+    nb_rand=10
+    n_samples_err=400
+    noise_level=0.1
+    nn_comparison(I,J,K,r,nb_rand,n_samples,n_samples_err,noise_level=noise_level,exact_err=False,scale=True)
+    
+def test_nn_err_it():
+    """
+    test of nn_comparison in a specific situation
+
+    Returns
+    -------
+    None.
+
+    """
+    I=100
+    J=100
+    K=100
+    r=10
+    n_samples=int(10*r*np.log(r)+1)
+    nb_rand=5
+    n_samples_err=400
+    noise_level=0.3
+    nn_err_it(I,J,K,r,nb_rand,n_samples,n_samples_err,exact_err=False,list_factors=False,scale=True,noise_level=noise_level)

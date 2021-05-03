@@ -1,5 +1,5 @@
 
-from src._hercprand import her_CPRAND_old,her_CPRAND1,her_CPRAND2,her_CPRAND,her_CPRAND4,her_CPRAND5
+from src._hercprand import her_CPRAND_old,her_CPRAND1,her_CPRAND2,her_CPRAND,her_CPRAND4,her_CPRAND5,her_CPRAND3
 
 
 import numpy as np
@@ -55,7 +55,7 @@ def test_hercprand():
     weights2,factors2,it2,error2,error_es2,cpt2,time2=her_CPRAND2(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=200,err_it_max=100,time_rec=True)
     print("2 Complicated case pct restart",cpt2)
     print("2 Complicated case time err_rand",np.cumsum(time2)[len(time2)-1])
-    weights3,factors3,it3,error3,error_es3,cpt3,time3=her_CPRAND(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=200,err_it_max=100,time_rec=True)
+    weights3,factors3,it3,error3,error_es3,cpt3,time3=her_CPRAND3(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=200,err_it_max=100,time_rec=True)
     print("3 Complicated case pct restart",cpt3)
     print("3 Complicated case time err_rand",np.cumsum(time3)[len(time3)-1])
     weights4,factors4,it4,error4,error_es4,cpt4,time4=her_CPRAND4(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=200,err_it_max=100,time_rec=True)
@@ -201,6 +201,47 @@ def test_hercprand_35():
     plt.xlabel('it')
     plt.yscale('log')
     plt.title('hercprand3 5 for complicated case')
+    plt.ylabel('terminaison criterion')
+    plt.legend(loc='best')
+
+
+def test_hercprand_13():
+    """
+    test hercprand 1 3 for complicated case
+    """
+    I=50
+    J=50
+    K=50
+    r=10 # rank
+    n_samples=int(10*r*np.log(r)+1) # nb of randomized samples
+    fac_true,noise=init_factors(I,J,K,r,True)
+    t=tl.cp_to_tensor((None,fac_true))+noise
+    factors=random_init_fac(t,r)
+    
+    weights1,factors1,it1,error1,cpt1,time1=her_Als(t,r,factors=copy.deepcopy(factors),it_max=200,time_rec=True)
+    print("her als Complicated case pct restart",cpt1)
+    
+    weights3,factors3,it3,error3,error_es3,cpt3,time3=her_CPRAND3(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=200,err_it_max=100,time_rec=True)
+    print("3 Complicated case pct restart",cpt3)
+    print("3 Complicated case time err_rand",np.cumsum(time3)[len(time3)-1])
+    print("3 min error", np.min(error3))
+    print("3 min error es", np.min(error_es3))
+  
+    weights5,factors5,it5,error5,error_es5,cpt5,time5=her_CPRAND1(t,r,n_samples,factors=copy.deepcopy(factors),exact_err=True,it_max=200,err_it_max=100,time_rec=True)
+    print("5 Complicated case pct restart",cpt5)
+    print("5 Complicated case time err_rand",np.cumsum(time5)[len(time5)-1])
+    print("5 min error", np.min(error5))
+    print("5 min error es", np.min(error_es5))
+    
+    
+    plt.figure(0)
+    plt.plot(range(len(error3)),error3,'b-',label="exact 3")
+    plt.plot(range(len(error_es3)),error_es3,'r--',label="err rand 3")
+    plt.plot(range(len(error5)),error5,'g-',label="exact 1")
+    plt.plot(range(len(error_es5)),error_es5,'k--',label="err rand 1")
+    plt.xlabel('it')
+    plt.yscale('log')
+    plt.title('hercprand 1 3 for complicated case')
     plt.ylabel('terminaison criterion')
     plt.legend(loc='best')
 
