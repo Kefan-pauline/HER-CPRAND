@@ -57,11 +57,9 @@ def her_Als(tensor,rank,factors=None,it_max=100,tol=1e-7,beta=0.5,eta=1.5,gamma=
   if list_factors==True : list_fac.append(copy.deepcopy(factors))
 
   it=0
-  # err_it=0
   cpt=0
   F_hat_bf=err(tensor,None,factors) # cost
   error=[F_hat_bf/norm_tensor]
-  # min_err=error[len(error)-1]
 
   while (error[len(error)-1] > tol and it<it_max ):
     if time_rec == True : tic=time.time()
@@ -91,12 +89,9 @@ def her_Als(tensor,rank,factors=None,it_max=100,tol=1e-7,beta=0.5,eta=1.5,gamma=
     it=it+1
     if list_factors==True : list_fac.append(copy.deepcopy(factors))
     error.append(F_hat_new/norm_tensor)
-    #if (error[len(error)-1]<min_err) : min_err=error[len(error)-1] # err update
-    #else : err_it=err_it+1
     if time_rec == True : 
       toc=time.time()
       list_time.append(toc-tic)
-  # weights,factors=tl.cp_normalize((None,factors))
   if time_rec == True and list_factors==True: return(weights,factors,it,error,cpt/it,list_fac,list_time)
   if list_factors==True : return(weights,factors,it,error,cpt/it,list_fac)
   if time_rec == True : return(weights,factors,it,error,cpt/it,list_time)
@@ -151,11 +146,9 @@ def nn_her_Als(tensor,rank,factors=None,it_max=100,tol=1e-7,beta=0.5,eta=1.5,gam
   if list_factors==True : list_fac.append(copy.deepcopy(factors))
 
   it=0
-  # err_it=0
   cpt=0
   F_hat_bf=err(tensor,None,factors) # cost
   error=[F_hat_bf/norm_tensor]
-  # min_err=error[len(error)-1]
 
   while (error[len(error)-1] > tol and it<it_max ):
     if time_rec == True : tic=time.time()
@@ -186,12 +179,9 @@ def nn_her_Als(tensor,rank,factors=None,it_max=100,tol=1e-7,beta=0.5,eta=1.5,gam
     it=it+1
     if list_factors==True : list_fac.append(copy.deepcopy(factors))
     error.append(F_hat_new/norm_tensor)
-    #if (error[len(error)-1]<min_err) : min_err=error[len(error)-1] # err update
-    #else : err_it=err_it+1
     if time_rec == True : 
       toc=time.time()
       list_time.append(toc-tic)
-  # weights,factors=tl.cp_normalize((None,factors))
   if time_rec == True and list_factors==True: return(weights,factors,it,error,cpt/it,list_fac,list_time)
   if list_factors==True : return(weights,factors,it,error,cpt/it,list_fac)
   if time_rec == True : return(weights,factors,it,error,cpt/it,list_time)

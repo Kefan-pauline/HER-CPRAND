@@ -105,7 +105,7 @@ def err(tensor,weight,factors):
 
 def sv_scale_to_100(A):
   """
-    scale the singular value of matrix A to 1,..,100
+    scale the singular value of matrix A to 1,..,10
 
     Parameters
     ----------

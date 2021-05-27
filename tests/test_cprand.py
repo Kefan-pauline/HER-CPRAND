@@ -22,30 +22,6 @@ def test_err_rand() :
     t_krus = tl.cp_to_tensor((None,factors))
     print(err_rand(t_krus,None,factors,2))
     
-def test_err_rand_fast():
-    """
-    Test of err_rand_fast for a kruskal tensor
-    plot the terminaison criterion with exact error of CPRAND
-    """
-    A=np.arange(9).reshape(3,3)
-    B=np.arange(6).reshape(2,3)+9
-    C=np.arange(6).reshape(2,3)+15
-    factors=[]
-    factors+=[A]
-    factors+=[B]
-    factors+=[C]
-    t_krus = tl.cp_to_tensor((None,factors))
-    rank=3
-    n_samples=int(10*rank*np.log(rank)+1)
-    weights,factors,it,err_ex,error,l=CPRAND(t_krus,rank,n_samples,list_factors=True)
-    plt.plot(range(len(err_ex)),err_ex,'b-',label="exact")
-    plt.plot(range(len(error)),error,'r--',label="err fast")
-    plt.xlabel('it')
-    plt.yscale('log')
-    plt.title('cprand for t_krus')
-    plt.ylabel('terminaison criterion')
-    plt.legend(loc='best')
-
     
 def test_cprand():
     """
@@ -91,7 +67,6 @@ def test_cprand_random():
     plt.legend(loc='best')
     plt.figure(1)
     fac_true,noise=init_factors(I,J,K,r,False)
-    fac_true=[A,B,C]
     t=tl.cp_to_tensor((None,fac_true))+noise
     print(tl.norm(t))
     factors=random_init_fac(t,r)

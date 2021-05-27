@@ -1,7 +1,15 @@
-from src._speedup import speedup,speedup_old
+from src._speedup import speedup
 import numpy as np
 
 def test_speedup():
+    """
+    test speedup for different data size N, sample size S and error sample size P.
+
+    Returns
+    -------
+    None.
+
+    """
     r=10
     list_N=[60,70,80,90,100]
 
@@ -12,7 +20,7 @@ def test_speedup():
     scale=True
     nn=True
     tol=0.11 # 10% error 
-    speedup_old(list_N,r,list_S,list_P,tol=tol,noise_level=noise_level,scale=scale,nn=nn,nb_tensors=5)
+    speedup(list_N,r,list_S,list_P,tol=tol,noise_level=noise_level,scale=scale,nn=nn,nb_tensors=5)
 
 
 

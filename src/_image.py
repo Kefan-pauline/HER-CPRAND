@@ -10,12 +10,28 @@ import copy
 import matplotlib.pyplot as plt
 
 
-
-
-
-
-
 def image_boxplot(r,n_samples,n_samples_err,exact_err=False,tol=0.0001):
+  """
+    boxplots of fit, it, time and restarts for image data
+
+    Parameters
+    ----------
+    r : int
+        rank.
+    n_samples : int
+        sample size used by (HER-)CPRAND.
+    n_samples_err : int
+        sample size used to evaluate error.
+    exact_err : Boolean, optional
+        whether use the exact error computation or not. The default is False.
+    tol : float, optional
+        tolerance of stopping criterion for algorithms. The default is 0.0001.
+
+    Returns
+    -------
+    None.
+
+  """
   path='/Users/sunke/OneDrive/PIR/S8/PIRS8/data/'
   file='Indian_pines_corrected.mat'
   mat = sio.loadmat(path+file)
@@ -33,7 +49,6 @@ def image_boxplot(r,n_samples,n_samples_err,exact_err=False,tol=0.0001):
   it={1 :  0, 2 :  0, 3 :  0, 4 :  0, 5 :  0, 6 :  0}
   time={1 :  [],2 :  [],3 :  [],4 :  [],5 :  [],6 :  []}
 
-    #norm_tensor=tl.norm(t,2)
   for k in range(5):
       # random initialization of factors
     factors=random_init_fac(t,r)

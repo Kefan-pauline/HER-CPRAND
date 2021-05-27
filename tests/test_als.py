@@ -87,7 +87,6 @@ def test_als():
     factors+=[B]
     factors+=[C]
     t_krus = tl.cp_to_tensor((None,factors))
-    #weights_cp,factors_cp=tl.cp_normalize((None,factors))
 
     
     weights,factors1,it,error1,l=als(t_krus,3,factors=factors,list_factors=True)
@@ -106,7 +105,6 @@ def test_nnals():
     fac_true,noise=init_factors(200,200,200,10,scale=True,nn=True)
 
     t_krus = tl.cp_to_tensor((None,fac_true))+noise
-    #weights_cp,factors_cp=tl.cp_normalize((None,factors))
     factors=random_init_fac(t_krus, 10)
     
     weights,factors1,it,error1,l=nn_als(t_krus,10,factors=factors,tol=0.1,list_factors=True)
@@ -115,6 +113,9 @@ def test_nnals():
         print(i)
     
 def compar_nn_als(I=200,J=200,K=200,r=10,nb_rand=10,exact_err=False,scale=True,noise_level=0.1,tol=0.0001):
+  """
+  compare nnals and als
+  """
   fit={1 :  [],2 :  []}
   score_tot={1 :  [],2 :  []}
   it_tot={1 :  [],2 :  []}

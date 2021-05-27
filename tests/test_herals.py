@@ -42,7 +42,6 @@ def test_herals_score():
     factors,noise=init_factors(I, J, K, r)
 
     t_krus = tl.cp_to_tensor((None,factors))
-    #weights_cp,factors_cp=tl.cp_normalize((None,factors))
     factors_init=random_init_fac(t_krus, r)
     
     weights,factors1,it,error1,l,pct=her_Als(t_krus,r,factors=factors_init,it_max=500,list_factors=True)

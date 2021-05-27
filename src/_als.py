@@ -36,7 +36,7 @@ def err_fast(norm_tensor,A,V,W):
 
 def als(tensor,rank,factors=None,it_max=100,tol=1e-7,list_factors=False,error_fast=True,time_rec=False):
   """
-    ALS methode of CP decomposition
+    ALS methode of CP decomposition (without normalization of factors)
 
     Parameters
     ----------
@@ -86,7 +86,6 @@ def als(tensor,rank,factors=None,it_max=100,tol=1e-7,list_factors=False,error_fa
     if time_rec == True : 
       toc=time.time() 
       list_time.append(toc-tic)
-  # weights,factors=tl.cp_tensor.cp_normalize((None,factors))
   if list_factors==True and time_rec==True: return(weights,factors,it,error,list_fac,list_time)
   if time_rec==True : return(weights,factors,it,error,list_time)
   if list_factors==True : return(weights,factors,it,error,list_fac)
@@ -94,7 +93,7 @@ def als(tensor,rank,factors=None,it_max=100,tol=1e-7,list_factors=False,error_fa
 
 def nn_als(tensor,rank,factors,it_max=100,tol=1e-7,list_factors=False,error_fast=True,time_rec=False):
   """
-    ALS methode of CP decomposition for non negative case
+    ALS methode of CP decomposition for non negative case (without normalization of factors)
 
     Parameters
     ----------
@@ -144,7 +143,6 @@ def nn_als(tensor,rank,factors,it_max=100,tol=1e-7,list_factors=False,error_fast
     if time_rec == True : 
       toc=time.time() 
       list_time.append(toc-tic)
-  # weights,factors=tl.cp_tensor.cp_normalize((None,factors))
   if list_factors==True and time_rec==True: return(weights,factors,it,error,list_fac,list_time)
   if time_rec==True : return(weights,factors,it,error,list_time)
   if list_factors==True : return(weights,factors,it,error,list_fac)

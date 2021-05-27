@@ -1,6 +1,6 @@
 
 """
-exact error doesn't work, need to change her cprand function 
+To run this function, we need to change her cprand function because it doesn't return exact error for now
 """
 import numpy as np
 import tensorly as tl

@@ -1,5 +1,5 @@
 """
-Need to change herCPRAND to find the graphs in report
+Need to change herCPRAND to find the graphs in report because it doesn't return exact error for now
 Test of param_research
 """
 import numpy as np
