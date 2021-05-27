@@ -6,6 +6,7 @@ Merge CPRAND and HER-ALS for a fast tensor decomposition algorithm.
 Project Organization
 ------------
 
+    ├── HER-CPRAND.pdf     <- Project report in PDF
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
